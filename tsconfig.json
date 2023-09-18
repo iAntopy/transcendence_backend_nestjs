@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "strict": true,                                      /* Enable all strict type-checking options. */
+//    "noUnusedLocals": true,                           /* Enable error reporting when local variables aren't read. */
+//    "noUnusedParameters": true,                       /* Raise an error when a function parameter isn't read. */
+//    "noImplicitReturns": true                        /* Enable error reporting for codepaths that do not explicitly return in a function. */
+  }
+}
