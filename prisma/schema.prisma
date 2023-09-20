@@ -15,6 +15,7 @@ model User {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
+  username String   @unique
   email String      @unique
   hash String
 

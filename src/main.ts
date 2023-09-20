@@ -1,13 +1,71 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { InternalServerErrorException, ValidationPipe } from '@nestjs/common';
+import { assert } from 'console';
+var ip = require("ip");
+
+const listen_port: string = '3000';
+
+
+// Defines the 'IP_ADDR_LOCAL' env variable.
+function append_ip_to_env(): string {
+  const addr: string = ip.address();
+
+  if (!addr)
+    throw new InternalServerErrorException('Missing environment variables');
+  process.env['IP_ADDR_LOCAL'] = addr;
+  return (addr);
+}
+
+function append_42oauth_redirect_to_env(ip_addr: string): string {
+  const redirect_uri: string = "http%3A%2F%2F" + ip_addr + ':' + listen_port + '/auth/42oauth';
+
+  if (!redirect_uri)
+    throw new InternalServerErrorException('Missing environment variables');
+  process.env['42OAUTH_REDIRECT_URI'] = redirect_uri;
+  return (redirect_uri);
+}
+
+// Defines the 'IP_ADDR_LOCAL' env variable.
+function append_42oauth_url_to_env(redirect_uri: string): string {
+
+  const base_url: string = process.env['42OAUTH_BASE_URL'];
+  const client_uid: string = process.env['42OAUTH_UID'];
+  const state_secret: string = process.env['42OAUTH_STATE'];
+
+  let url: string = base_url;
+  url += '?client_id=' + client_uid;
+  url += '&redirect_uri=' + redirect_uri;
+  url += '&state=' + state_secret;
+  url += '&response_type=code';
+  
+  if (!base_url || !client_uid || !url)
+    throw new InternalServerErrorException('Missing environment variables');
+  process.env['42OAUTH_URL'] = url;
+  return (url);
+}
+
+function setup_42oauth_env_vars() {
+
+  const ip_addr: string = append_ip_to_env();
+  const redirect_uri: string = append_42oauth_redirect_to_env(ip_addr);
+  const url: string = append_42oauth_url_to_env(redirect_uri);
+  if (!ip_addr || !redirect_uri || !url)
+    throw new InternalServerErrorException('Missing environment variables');
+
+  console.log('42OAuth URL : ' + url);
+}
 
 async function bootstrap() {
+
+  setup_42oauth_env_vars();
+
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }))
+  console.log(process.env['IP_ADDR_LOCAL']);
   //await app.listen(process.env.NESTJS_PORT ? process.env.NESTJS_PORT : 3000);
-  await app.listen(3000);
+  await app.listen(listen_port);
 }
 bootstrap();
