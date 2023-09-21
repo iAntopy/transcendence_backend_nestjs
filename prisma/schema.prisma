@@ -15,12 +15,17 @@ model User {
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
+  isAuthenticating Boolean @default(false)// Temp value. True only from the moment client is sent to 42API OAuth Authenticator and when they come back to our app, to prevent bad access.
+  isAuthenticated Boolean @default(false)// Also means isOnline
+
   username String   @unique
   email String      @unique
   hash String
 
   firstName String?
   lastName String?
+
+  image String?
 
   bookmarks Bookmark[]
 
